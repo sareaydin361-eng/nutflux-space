@@ -1,7 +1,7 @@
 // file: /pages/api/get-order/[orderId].js
-import { connectDB } from "../../lib/db";// your MongoDB connection helper
-import Order from "@/models/Order"; // your Mongoose model
-import CryptoJS from "crypto-js";
+import { connectDB } from "../../../lib/db";// your MongoDB connection helper
+import Order from "../../../models/order"; // your Mongoose model
+import crypto from "crypto";
 
 export default async function handler(req, res) {
   const { orderId } = req.query;
@@ -20,21 +20,19 @@ export default async function handler(req, res) {
     }
 
     // Hash the fields using SHA256
-    const hashedName = CryptoJS.SHA256(order.name.trim().toLowerCase()).toString(CryptoJS.enc.Hex);
-    const hashedEmail = CryptoJS.SHA256(order.email.trim().toLowerCase()).toString(CryptoJS.enc.Hex);
-    const hashedPhone = CryptoJS.SHA256(order.phone.replace(/\D/g, "")).toString(CryptoJS.enc.Hex);
-    const hashedAddress = CryptoJS.SHA256(order.address.trim()).toString(CryptoJS.enc.Hex);
-
-    res.status(200).json({
-      orderId: order.orderId,
-      amount: order.amount,
-      hashedName,
-      hashedEmail,
-      hashedPhone,
-      hashedAddress,
-      orderItems: order.orderItems,
-      paymentStatus: order.paymentStatus,
-      createdAt: order.createdAt,
+    const hash = (str) =>
+        crypto.createHash("sha256").update(str).digest("hex");
+  
+      res.status(200).json({
+        orderId: order.orderId,
+        amount: order.amount,
+        hashedName: hash(order.name.trim().toLowerCase()),
+        hashedEmail: hash(order.email.trim().toLowerCase()),
+        hashedPhone: hash(order.phone.replace(/\D/g, "")),
+        hashedAddress: hash(order.address.trim()),
+        orderItems: order.orderItems,
+        paymentStatus: order.paymentStatus,
+        createdAt: order.createdAt,
     });
   } catch (err) {
     console.error("❌ Error fetching order:", err);
