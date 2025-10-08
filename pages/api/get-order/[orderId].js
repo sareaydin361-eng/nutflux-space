@@ -36,11 +36,11 @@ export default async function handler(req, res) {
       res.status(200).json({
         orderId: order.orderId,
         amount: order.amount,
-        hashedName: hash(order.name.trim().toLowerCase()),
-        hashedEmail: hash(order.email.trim().toLowerCase()),
-        hashedPhone: hash(order.phone.replace(/\D/g, "")),
-        hashedAddress: hash(order.address.trim()),
-        orderItems: order.orderItems,
+        hashedName: hash(order.user.name.trim().toLowerCase()),
+     
+        hashedPhone: hash(order.user.phone.replace(/\D/g, "")),
+        hashedAddress: hash(order.user.address.trim()),
+     
         paymentStatus: order.paymentStatus,
         createdAt: order.createdAt,
     });
