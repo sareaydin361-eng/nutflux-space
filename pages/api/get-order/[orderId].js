@@ -4,6 +4,13 @@ import Order from "../../../models/order"; // your Mongoose model
 import crypto from "crypto";
 
 export default async function handler(req, res) {
+    res.setHeader("Access-Control-Allow-Origin", "*"); // change to frontend domain in prod
+    res.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
+    res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
+  
+    if (req.method === "OPTIONS") {
+      return res.status(200).end(); // Preflight OK
+    }
   const { orderId } = req.query;
 
   if (req.method !== "GET") {
